@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频异常检测系统</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 音频异常检测系统</h1>
+            <p class="subtitle">训练、测试和实时检测界面</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('train')">🚀 训练模型</button>
+            <button class="tab-button" onclick="showTab('test')">📊 测试模型</button>
+            <button class="tab-button" onclick="showTab('realtime')">⚡ 实时检测</button>
+        </div>
+
+        <!-- Train Tab -->
+        <div id="train-tab" class="tab-content active">
+            <h2>模型训练</h2>
+            <form id="train-form">
+                <!-- 基本配置 -->
+                <h3 class="section-title">基本配置</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Machine Type (机器类型):</label>
+                        <input type="text" id="train-machine-type" value="fan" required>
+                        <small>例如: fan, gearbox, pump</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Train Directory (训练数据目录):</label>
+                        <input type="text" id="train-dir" value="data/fan/train" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Output Directory (输出目录):</label>
+                        <input type="text" id="train-output-dir" value="./checkpoints">
+                    </div>
+                </div>
+
+                <!-- 训练参数 -->
+                <h3 class="section-title">训练参数</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Epochs (训练轮数):</label>
+                        <input type="number" id="train-epochs" value="150" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Batch Size (批大小):</label>
+                        <input type="number" id="train-batch" value="32" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Learning Rate (学习率):</label>
+                        <input type="number" id="train-lr" value="0.001" step="0.0001">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Weight Decay (权重衰减):</label>
+                        <input type="number" id="train-weight-decay" value="0.0001" step="0.0001">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Optimizer (优化器):</label>
+                        <select id="train-optimizer">
+                            <option value="adam">Adam</option>
+                            <option value="adamw">AdamW</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Scheduler (学习率调度器):</label>
+                        <select id="train-scheduler">
+                            <option value="plateau">Plateau</option>
+                            <option value="cosine">Cosine</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Warmup Epochs (预热轮数):</label>
+                        <input type="number" id="train-warmup" value="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Num Workers (数据加载线程数):</label>
+                        <input type="number" id="train-workers" value="4" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Save Interval (保存间隔):</label>
+                        <input type="number" id="train-save-interval" value="10" min="1">
+                        <small>每N个epoch保存一次</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Random Seed (随机种子):</label>
+                        <input type="number" id="train-seed" value="42">
+                        <small>留空则随机</small>
+                    </div>
+                </div>
+
+                <!-- 特征提取参数 -->
+                <h3 class="section-title">特征提取参数</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sample Rate (采样率):</label>
+                        <input type="number" id="train-sr" value="16000" min="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>N Mels (Mel频带数):</label>
+                        <input type="number" id="train-n-mels" value="128" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>N FFT (FFT大小):</label>
+                        <input type="number" id="train-n-fft" value="1024" min="1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hop Length (跳跃长度):</label>
+                        <input type="number" id="train-hop-length" value="512" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fmin (最小频率Hz):</label>
+                        <input type="number" id="train-fmin" value="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fmax (最大频率Hz):</label>
+                        <input type="number" id="train-fmax" value="8000" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patch Frames (帧数):</label>
+                        <input type="number" id="train-patch-frames" value="128" min="1">
+                    </div>
+                </div>
+
+                <!-- 模型参数 -->
+                <h3 class="section-title">模型参数</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Width Multiplier (宽度乘数):</label>
+                        <input type="number" id="train-width-mult" value="1.0" step="0.1" min="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dropout Rate (Dropout比率):</label>
+                        <input type="number" id="train-dropout" value="0.3" step="0.1" min="0" max="1">
+                    </div>
+                </div>
+
+                <!-- 数据增强参数 -->
+                <h3 class="section-title">数据增强参数</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="train-augmentation" checked>
+                            Enable Augmentation (启用数据增强)
+                        </label>
+                    </div>
+                </div>
+
+                <div id="augmentation-params">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Volume Min (音量缩放最小值):</label>
+                            <input type="number" id="train-aug-vol-min" value="0.7" step="0.1" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Volume Max (音量缩放最大值):</label>
+                            <input type="number" id="train-aug-vol-max" value="1.3" step="0.1" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Time Shift (时间偏移帧数):</label>
+                            <input type="number" id="train-aug-time-shift" value="3" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Freq Mask (频率掩蔽Bin数):</label>
+                            <input type="number" id="train-aug-freq-mask" value="15" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Time Mask (时间掩蔽帧数):</label>
+                            <input type="number" id="train-aug-time-mask" value="15" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">开始训练</button>
+                <button type="button" class="btn btn-danger" onclick="stopTask('train')">停止训练</button>
+            </form>
+
+            <div class="output-section">
+                <h3>训练输出:</h3>
+                <div id="train-output" class="output-box"></div>
+                <div id="train-status" class="status-box"></div>
+            </div>
+        </div>
+
+        <!-- Test Tab -->
+        <div id="test-tab" class="tab-content">
+            <h2>模型测试</h2>
+            <form id="test-form">
+                <div class="form-group">
+                    <label>Checkpoint (模型检查点):</label>
+                    <select id="test-checkpoint" required>
+                        <option value="">选择一个checkpoint...</option>
+                    </select>
+                    <button type="button" class="btn-small" onclick="refreshCheckpoints()">刷新</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Machine Type (机器类型):</label>
+                    <input type="text" id="test-machine-type" value="fan" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Train Directory (训练数据目录):</label>
+                    <input type="text" id="test-train-dir" value="data/fan/train" required>
+                    <small>用于计算统计信息</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Test Directory (测试数据目录):</label>
+                    <input type="text" id="test-test-dir" value="data/fan/source_test" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patch Frames (帧数):</label>
+                        <input type="number" id="test-patch-frames" value="64" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hop Frames (跳跃帧数):</label>
+                        <input type="number" id="test-hop-frames" value="16" min="1">
+                        <small>越小越精确</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">开始测试</button>
+                <button type="button" class="btn btn-danger" onclick="stopTask('test')">停止测试</button>
+            </form>
+
+            <div class="output-section">
+                <h3>测试结果:</h3>
+                <div id="test-results" class="results-grid"></div>
+                <div id="test-output" class="output-box"></div>
+                <div id="test-status" class="status-box"></div>
+            </div>
+        </div>
+
+        <!-- Real-time Tab -->
+        <div id="realtime-tab" class="tab-content">
+            <h2>实时检测</h2>
+            <form id="realtime-form">
+                <h3 class="section-title">基本配置</h3>
+                <div class="form-group">
+                    <label>Checkpoint (模型检查点):</label>
+                    <select id="realtime-checkpoint" required>
+                        <option value="">选择一个checkpoint...</option>
+                    </select>
+                    <button type="button" class="btn-small" onclick="refreshCheckpoints()">刷新</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Audio Source (音频源):</label>
+                        <select id="realtime-source" onchange="toggleAudioSource()">
+                            <option value="microphone">麦克风</option>
+                            <option value="file">音频文件</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Device (计算设备):</label>
+                        <select id="realtime-device">
+                            <option value="cuda">CUDA (GPU)</option>
+                            <option value="cpu">CPU</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="audio-file-group" style="display: none;">
+                    <label>Audio File Path (音频文件路径):</label>
+                    <input type="text" id="realtime-audio-file" placeholder="data/fan/source_test/...">
+                </div>
+
+                <div class="form-group" id="device-id-group">
+                    <label>Microphone Device ID (麦克风设备ID-可选):</label>
+                    <input type="number" id="realtime-device-id" placeholder="留空使用默认设备">
+                </div>
+
+                <div class="form-group" id="realtime-mode-group" style="display: none;">
+                    <label>
+                        <input type="checkbox" id="realtime-mode" checked>
+                        Realtime Mode (实时播放模式 - 文件输入时模拟实时)
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enable-playback">
+                        Enable Playback (启用音频外放 - 检测时播放音频)
+                    </label>
+                    <small>勾选后可以听到正在检测的音频</small>
+                </div>
+
+                <h3 class="section-title">检测参数</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Anomaly Threshold (异常阈值):</label>
+                        <input type="number" id="realtime-threshold" value="2.0" step="0.1" min="0">
+                        <small>推荐: 1.5-3.0 (越低越敏感)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Patch Frames (帧数):</label>
+                        <input type="number" id="realtime-patch-frames" value="64" min="1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Buffer Duration (缓冲区时长-秒):</label>
+                        <input type="number" id="realtime-buffer-duration" value="10.0" step="0.5" min="1">
+                        <small>音频缓冲区长度</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hop Duration (检测间隔-秒):</label>
+                        <input type="number" id="realtime-hop-duration" value="0.5" step="0.1" min="0.1">
+                        <small>每隔多久检测一次</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success">开始检测</button>
+                <button type="button" class="btn btn-danger" onclick="stopRealtime()">停止检测</button>
+            </form>
+
+            <div class="output-section">
+                <h3>检测状态:</h3>
+                <div class="detection-dashboard">
+                    <div class="detection-card">
+                        <div class="card-title">当前状态</div>
+                        <div id="detection-status" class="status-indicator">就绪</div>
+                    </div>
+
+                    <div class="detection-card">
+                        <div class="card-title">最新检测</div>
+                        <div id="last-detection" class="detection-result">
+                            <div class="detection-label">等待中...</div>
+                        </div>
+                    </div>
+
+                    <div class="detection-card">
+                        <div class="card-title">统计信息</div>
+                        <div id="detection-stats">
+                            <div class="stat-row">
+                                <span>总检测数:</span>
+                                <span id="stat-total">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>异常数:</span>
+                                <span id="stat-anomalies">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>异常率:</span>
+                                <span id="stat-rate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>检测历史:</h3>
+                <div id="realtime-output" class="output-box realtime-output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
