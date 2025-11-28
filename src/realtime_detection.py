@@ -4,21 +4,23 @@
 支持从麦克风或音频文件流实时检测异常
 """
 
-import torch
-import numpy as np
-import sounddevice as sd
-import librosa
+import os
+import sys
 import json
 import time
+import numpy as np
+import torch
+import torch.nn as nn
+import sounddevice as sd
+import librosa
 import argparse
 from collections import deque
 from threading import Thread, Lock
 import queue
-import sys
 from datetime import datetime
 
-from src.features import LogMelExtractor
-from src.model import get_model
+from features import LogMelExtractor
+from model import MobileNetV2
 
 
 class RealtimeAnomalyDetector:

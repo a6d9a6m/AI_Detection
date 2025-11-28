@@ -1,0 +1,34 @@
+{
+  "task_id": "batch_extract_20251129_003849",
+  "total": 3,
+  "completed": 1,
+  "failed": 2,
+  "completed_ids": [
+    1
+  ],
+  "failed_ids": [
+    2,
+    3
+  ],
+  "results": [
+    {
+      "feature_id": 4,
+      "feature_path": "D:\\baseline\\src\\..\\features\\feature_1_20251129_003849.npy",
+      "feature_shape": [
+        128,
+        313
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "voiceprint_id": 2,
+      "error": "Voiceprint not found"
+    },
+    {
+      "voiceprint_id": 3,
+      "error": ""
+    }
+  ],
+  "status": "completed"
+}

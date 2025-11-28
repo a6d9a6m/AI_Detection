@@ -20,9 +20,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from src.features import LogMelExtractor
-from src.dataset import DCASE2021Dataset, DCASE2021EvalDataset
-from src.backbones import get_backbone_model, count_parameters
+from features import LogMelExtractor
+from dataset import DCASE2021Dataset, DCASE2021EvalDataset
+from backbones import get_backbone_model, count_parameters
 
 
 def set_seed(seed):
@@ -474,3 +474,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

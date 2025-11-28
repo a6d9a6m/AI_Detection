@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频异常检测系统 - 控制台</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><span class="material-symbols-rounded">graphic_eq</span> 音频检测系统</h2>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#overview" class="nav-link active" onclick="showPage('overview')">
+                            <span class="material-symbols-rounded">dashboard</span>
+                            <span>概览</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#data" class="nav-link" onclick="showPage('data')">
+                            <span class="material-symbols-rounded">audio_file</span>
+                            <span>声纹数据管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#training" class="nav-link" onclick="showPage('training')">
+                            <span class="material-symbols-rounded">model_training</span>
+                            <span>模型训练</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#models" class="nav-link" onclick="showPage('models')">
+                            <span class="material-symbols-rounded">psychology</span>
+                            <span>模型管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reports" class="nav-link" onclick="showPage('reports')">
+                            <span class="material-symbols-rounded">description</span>
+                            <span>报告管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#api" class="nav-link" onclick="showPage('api')">
+                            <span class="material-symbols-rounded">vpn_key</span>
+                            <span>API管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#system" class="nav-link" onclick="showPage('system')">
+                            <span class="material-symbols-rounded">monitoring</span>
+                            <span>系统监控</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部栏 -->
+            <div class="top-bar">
+                <h1 class="page-title" id="page-title">概览</h1>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="avatar" id="user-avatar">A</div>
+                        <span id="username">加载中...</span>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">
+                        <span class="material-symbols-rounded">logout</span> 退出登录
+                    </button>
+                </div>
+            </div>
+
+            <!-- 概览页面 -->
+            <div id="overview-page" class="page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <span class="material-symbols-rounded">audio_file</span>
+                        </div>
+                        <div class="stat-value" id="stat-voiceprints">0</div>
+                        <div class="stat-label">声纹数据</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <span class="material-symbols-rounded">psychology</span>
+                        </div>
+                        <div class="stat-value" id="stat-models">0</div>
+                        <div class="stat-label">训练模型</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <span class="material-symbols-rounded">description</span>
+                        </div>
+                        <div class="stat-value" id="stat-reports">0</div>
+                        <div class="stat-label">生成报告</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <span class="material-symbols-rounded">api</span>
+                        </div>
+                        <div class="stat-value" id="stat-api-calls">0</div>
+                        <div class="stat-label">API调用</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">快速开始</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <button class="btn btn-primary" onclick="showPage('data')">
+                            <span class="material-symbols-rounded">upload</span> 上传声纹数据
+                        </button>
+                        <button class="btn btn-success" onclick="showPage('training')">
+                            <span class="material-symbols-rounded">rocket_launch</span> 开始训练模型
+                        </button>
+                        <button class="btn btn-outline" onclick="showPage('reports')">
+                            <span class="material-symbols-rounded">bar_chart</span> 生成报告
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 声纹数据管理页面 -->
+            <div id="data-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">上传声纹数据</h3>
+                    </div>
+                    <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                        <div class="upload-icon">
+                            <span class="material-symbols-rounded">cloud_upload</span>
+                        </div>
+                        <h3>点击上传或拖拽文件到此处</h3>
+                        <p>支持 .wav, .mp3, .flac 格式</p>
+                        <input type="file" id="file-input" multiple accept=".wav,.mp3,.flac" style="display: none;">
+                    </div>
+                    <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">机器类型</label>
+                            <input type="text" class="form-control" id="upload-machine-type" placeholder="例如: fan, pump" value="fan">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Section</label>
+                            <input type="text" class="form-control" id="upload-section" placeholder="例如: 00" value="00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">声纹数据列表</h3>
+                        <div class="card-actions">
+                            <div class="search-box">
+                                <span class="material-symbols-rounded">search</span>
+                                <input type="text" class="form-control" id="search-input" placeholder="搜索...">
+                            </div>
+                            <button class="btn btn-outline" onclick="loadVoiceprints()">
+                                <span class="material-symbols-rounded">refresh</span> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="voiceprints-table">
+                            <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>机器类型</th>
+                                    <th>Section</th>
+                                    <th>大小</th>
+                                    <th>上传时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voiceprints-tbody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px;">
+                                        <div class="loading"></div> 加载中...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模型训练页面 -->
+            <div id="training-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">启动训练任务</h3>
+                    </div>
+                    <form id="training-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label class="form-label">机器类型</label>
+                                <input type="text" class="form-control" id="train-machine-type" value="fan" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">模型类型</label>
+                                <select class="form-control" id="train-model-type">
+                                    <option value="mobilenetv2">MobileNetV2</option>
+                                    <option value="resnet18">ResNet18</option>
+                                    <option value="resnet34">ResNet34</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">训练数据目录</label>
+                                <input type="text" class="form-control" id="train-dir" value="data/fan/train" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Epochs</label>
+                                <input type="number" class="form-control" id="train-epochs" value="150" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Batch Size</label>
+                                <input type="number" class="form-control" id="train-batch-size" value="32" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Learning Rate</label>
+                                <input type="number" class="form-control" id="train-lr" value="0.001" step="0.0001">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <span class="material-symbols-rounded">rocket_launch</span> 开始训练
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">训练任务列表</h3>
+                        <button class="btn btn-outline" onclick="loadTrainingTasks()">
+                            <span class="material-symbols-rounded">refresh</span> 刷新
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>任务ID</th>
+                                    <th>机器类型</th>
+                                    <th>状态</th>
+                                    <th>进度</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="training-tasks-tbody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px;">
+                                        <div class="loading"></div> 加载中...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模型管理页面 -->
+            <div id="models-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">模型列表</h3>
+                        <button class="btn btn-outline" onclick="loadModels()">
+                            <span class="material-symbols-rounded">refresh</span> 刷新
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>模型名称</th>
+                                    <th>版本</th>
+                                    <th>机器类型</th>
+                                    <th>模型类型</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="models-tbody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 40px;">
+                                        <div class="loading"></div> 加载中...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报告管理页面 -->
+            <div id="reports-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">生成报告</h3>
+                    </div>
+                    <form id="report-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label class="form-label">报告标题</label>
+                                <input type="text" class="form-control" id="report-title" value="音频异常检测报告" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">报告格式</label>
+                                <select class="form-control" id="report-format">
+                                    <option value="pdf">PDF</option>
+                                    <option value="excel">Excel</option>
+                                    <option value="word">Word</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-rounded">description</span> 生成报告
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">报告列表</h3>
+                        <button class="btn btn-outline" onclick="loadReports()">
+                            <span class="material-symbols-rounded">refresh</span> 刷新
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>类型</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-tbody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 40px;">
+                                        <div class="loading"></div> 加载中...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API管理页面 -->
+            <div id="api-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">创建API密钥</h3>
+                    </div>
+                    <form id="api-key-form">
+                        <div class="form-group">
+                            <label class="form-label">密钥名称</label>
+                            <input type="text" class="form-control" id="api-key-name" placeholder="例如: 移动端API" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-rounded">vpn_key</span> 创建密钥
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card" id="new-key-card" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="material-symbols-rounded">warning</span> 新密钥（请保存）
+                        </h3>
+                    </div>
+                    <p style="color: var(--danger-color); margin-bottom: 12px;">
+                        此密钥只会显示一次，请立即保存！
+                    </p>
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; font-family: monospace;">
+                        <code id="new-api-key"></code>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">API文档</h3>
+                    </div>
+                    <div style="color: var(--text-secondary);">
+                        <h4 style="color: var(--text-primary); margin-bottom: 12px;">公开API端点</h4>
+                        <p><code>POST /api/public/detect</code> - 异常检测</p>
+                        <p style="margin-top: 8px;">
+                            <strong>请求头:</strong> <code>X-API-Key: your-api-key</code>
+                        </p>
+                        <p style="margin-top: 8px;">
+                            <strong>请求示例:</strong>
+                        </p>
+                        <pre style="background: #f5f5f5; padding: 12px; border-radius: 8px; overflow-x: auto;">
+curl -X POST http://localhost:5000/api/public/detect \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"audio_file": "path/to/audio.wav"}'</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统监控页面 -->
+            <div id="system-page" class="page-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">系统状态</h3>
+                        <button class="btn btn-outline" onclick="loadSystemStatus()">
+                            <span class="material-symbols-rounded">refresh</span> 刷新
+                        </button>
+                    </div>
+                    <div id="system-status-content">
+                        <div class="loading"></div> 加载中...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>

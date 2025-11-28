@@ -13,14 +13,10 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import sys
 
-# 添加项目根目录到Python路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from src.features import LogMelExtractor
-from src.dataset import DCASE2021Dataset
-from src.model import get_model
+from features import LogMelExtractor
+from dataset import DCASE2021Dataset
+from model import get_model
 
 
 def set_seed(seed):
@@ -405,3 +401,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

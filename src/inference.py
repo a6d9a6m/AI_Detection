@@ -15,10 +15,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from sklearn.metrics import roc_auc_score, roc_curve
-
-from src.features import LogMelExtractor
-from src.dataset import DCASE2021EvalDataset
-from src.model import get_model
+from features import LogMelExtractor
+from dataset import DCASE2021EvalDataset
+from model import get_model
 
 
 def calculate_scores(probs):
@@ -365,3 +364,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -1,0 +1,281 @@
+{
+  "total": 39,
+  "passed": 31,
+  "failed": 0,
+  "skipped": 8,
+  "details": [
+    {
+      "test_id": "TN-F-001",
+      "test_name": "声纹数据单个上传",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:28.403673"
+    },
+    {
+      "test_id": "TN-F-002",
+      "test_name": "声纹数据上传限制",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:30.421828"
+    },
+    {
+      "test_id": "TN-F-003",
+      "test_name": "声纹数据批量导入",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:36.586331"
+    },
+    {
+      "test_id": "TN-F-004",
+      "test_name": "批量导入错误处理",
+      "status": "SKIP",
+      "message": "已在其他测试中覆盖",
+      "timestamp": "2025-11-29T00:38:36.586331"
+    },
+    {
+      "test_id": "TN-F-005",
+      "test_name": "声纹数据搜索",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:38.597120"
+    },
+    {
+      "test_id": "TN-F-006",
+      "test_name": "声纹数据详情查看和下载",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:40.618000"
+    },
+    {
+      "test_id": "TN-F-007",
+      "test_name": "声纹数据删除",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:42.682738"
+    },
+    {
+      "test_id": "TN-F-008",
+      "test_name": "特征提取参数配置",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:45.156122"
+    },
+    {
+      "test_id": "TN-F-009",
+      "test_name": "特征提取参数验证",
+      "status": "SKIP",
+      "message": "已在TN-F-008中覆盖",
+      "timestamp": "2025-11-29T00:38:45.156122"
+    },
+    {
+      "test_id": "TN-F-010",
+      "test_name": "模型训练参数配置",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:47.231651"
+    },
+    {
+      "test_id": "TN-F-011",
+      "test_name": "模型训练参数验证",
+      "status": "SKIP",
+      "message": "已在TN-F-010中覆盖",
+      "timestamp": "2025-11-29T00:38:47.232660"
+    },
+    {
+      "test_id": "TN-F-012",
+      "test_name": "批量特征提取",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:49.311421"
+    },
+    {
+      "test_id": "TN-F-013",
+      "test_name": "特征提取中断恢复",
+      "status": "SKIP",
+      "message": "需要复杂的中断模拟",
+      "timestamp": "2025-11-29T00:38:49.311421"
+    },
+    {
+      "test_id": "TN-F-014",
+      "test_name": "模型可视化",
+      "status": "SKIP",
+      "message": "可视化功能未实现",
+      "timestamp": "2025-11-29T00:38:49.312421"
+    },
+    {
+      "test_id": "TN-F-015",
+      "test_name": "模型比较",
+      "status": "SKIP",
+      "message": "模型比较功能未实现",
+      "timestamp": "2025-11-29T00:38:49.312421"
+    },
+    {
+      "test_id": "TN-F-016",
+      "test_name": "异常检测报告生成",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:51.411174"
+    },
+    {
+      "test_id": "TN-F-017",
+      "test_name": "报告模板管理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:53.450010"
+    },
+    {
+      "test_id": "TN-F-018",
+      "test_name": "报告自定义",
+      "status": "SKIP",
+      "message": "已在TN-F-016中覆盖",
+      "timestamp": "2025-11-29T00:38:53.450010"
+    },
+    {
+      "test_id": "TN-F-019",
+      "test_name": "报告导出格式",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:38:59.671996"
+    },
+    {
+      "test_id": "TN-F-020",
+      "test_name": "报告批量生成",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:01.840454"
+    },
+    {
+      "test_id": "TN-F-021",
+      "test_name": "定时报告生成",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:03.899155"
+    },
+    {
+      "test_id": "TN-F-022",
+      "test_name": "报告统计分析",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:05.915959"
+    },
+    {
+      "test_id": "TN-F-023",
+      "test_name": "趋势分析",
+      "status": "SKIP",
+      "message": "已在统计分析中覆盖",
+      "timestamp": "2025-11-29T00:39:05.915959"
+    },
+    {
+      "test_id": "TN-F-024",
+      "test_name": "API接口服务",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:10.018878"
+    },
+    {
+      "test_id": "TN-F-025",
+      "test_name": "API错误处理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:12.042339"
+    },
+    {
+      "test_id": "TN-F-026",
+      "test_name": "用户权限管理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:14.069655"
+    },
+    {
+      "test_id": "TN-F-027",
+      "test_name": "角色权限继承",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:16.124331"
+    },
+    {
+      "test_id": "TN-F-028",
+      "test_name": "多租户隔离",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:18.152195"
+    },
+    {
+      "test_id": "TN-F-029",
+      "test_name": "租户资源配额",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:20.186262"
+    },
+    {
+      "test_id": "TN-F-030",
+      "test_name": "计费管理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:22.220064"
+    },
+    {
+      "test_id": "TN-F-031",
+      "test_name": "计费周期管理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:24.259596"
+    },
+    {
+      "test_id": "TN-F-032",
+      "test_name": "移动端API",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:26.314493"
+    },
+    {
+      "test_id": "TN-F-033",
+      "test_name": "移动端离线模式",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:28.346602"
+    },
+    {
+      "test_id": "TN-F-034",
+      "test_name": "第三方系统集成",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:30.380031"
+    },
+    {
+      "test_id": "TN-F-035",
+      "test_name": "集成错误处理",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:32.405930"
+    },
+    {
+      "test_id": "TN-F-036",
+      "test_name": "高级分析功能",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:34.435050"
+    },
+    {
+      "test_id": "TN-F-037",
+      "test_name": "自定义分析模型",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:36.445161"
+    },
+    {
+      "test_id": "TN-F-038",
+      "test_name": "企业级安全",
+      "status": "PASS",
+      "message": "通过认证机制验证",
+      "timestamp": "2025-11-29T00:39:36.445764"
+    },
+    {
+      "test_id": "TN-F-039",
+      "test_name": "审计日志",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-11-29T00:39:38.475255"
+    }
+  ]
+}
