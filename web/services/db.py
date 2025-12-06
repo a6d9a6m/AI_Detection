@@ -11,8 +11,13 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 import os
+import sys
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'database.db')
+# Add src to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+from paths import DATABASE as DATABASE_PATH
+
+DB_PATH = DATABASE_PATH
 
 
 class Database:

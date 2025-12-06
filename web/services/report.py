@@ -5,6 +5,7 @@
 
 import os
 import json
+import sys
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 import traceback
@@ -24,7 +25,11 @@ from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
-from models import Database, Report, Model
+# Add paths
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+
+from .db import Database, Report, Model
+from paths import REPORTS as REPORTS_DIR, report_path as get_report_path
 import matplotlib
 matplotlib.use('Agg')  # 使用非GUI后端，避免线程问题
 import matplotlib.pyplot as plt
@@ -36,8 +41,7 @@ class ReportGenerator:
 
     def __init__(self):
         self.db = Database()
-        self.report_dir = os.path.join(os.path.dirname(__file__), '..', 'reports')
-        os.makedirs(self.report_dir, exist_ok=True)
+        self.report_dir = REPORTS_DIR
 
     def generate_report(self, user_id: int, tenant_id: Optional[int],
                        report_config: Dict[str, Any]) -> Dict[str, Any]:

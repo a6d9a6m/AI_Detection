@@ -7,36 +7,39 @@ from flask import Flask, request, jsonify, session, send_file, send_from_directo
 from flask_cors import CORS
 from functools import wraps
 import os
+import sys
 import json
 from datetime import datetime, timedelta
 import traceback
 
+# Add paths
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+
 # 导入数据库模型
-from models import (
+from .db import (
     Database, User, VoiceprintData, Model, Report,
     APIKey, AuditLog
 )
 
 # 导入服务层
-from training_service import training_manager, feature_manager, evaluation_manager
-from report_service import report_generator, template_manager
+from .training import training_manager, feature_manager, evaluation_manager
+from .report import report_generator, template_manager
 
-# 获取当前文件所在目录
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# 导入路径配置
+from paths import (
+    init as init_directories,
+    VISUALIZATIONS,
+    FEATURE_EXTRACTION_CHECKPOINTS,
+    feature_checkpoint_path as get_feature_extraction_checkpoint_path
+)
 
-# 判断web目录位置（支持从根目录或src目录启动）
-if os.path.exists(os.path.join(BASE_DIR, 'web', 'templates')):
-    # 从src目录启动
-    TEMPLATE_FOLDER = os.path.join(BASE_DIR, 'web', 'templates')
-    STATIC_FOLDER = os.path.join(BASE_DIR, 'web', 'static')
-elif os.path.exists(os.path.join(BASE_DIR, 'src', 'web', 'templates')):
-    # 从根目录启动
-    TEMPLATE_FOLDER = os.path.join(BASE_DIR, 'src', 'web', 'templates')
-    STATIC_FOLDER = os.path.join(BASE_DIR, 'src', 'web', 'static')
-else:
-    # 尝试相对于工作目录
-    TEMPLATE_FOLDER = os.path.join(os.getcwd(), 'src', 'web', 'templates')
-    STATIC_FOLDER = os.path.join(os.getcwd(), 'src', 'web', 'static')
+VISUALIZATIONS_DIR = VISUALIZATIONS
+FEATURE_EXTRACTION_CHECKPOINTS_DIR = FEATURE_EXTRACTION_CHECKPOINTS
+
+# 获取web目录
+WEB_DIR = os.path.join(os.path.dirname(__file__), '..')
+TEMPLATE_FOLDER = os.path.join(WEB_DIR, 'templates')
+STATIC_FOLDER = os.path.join(WEB_DIR, 'static')
 
 # 初始化Flask应用
 app = Flask(__name__,
@@ -50,6 +53,9 @@ CORS(app)
 
 # 确保上传目录存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# 初始化所有结果输出目录
+init_directories()
 
 # 初始化数据库
 db = Database()
@@ -804,8 +810,7 @@ def resume_batch_extract_features(task_id):
         import json
 
         # 查找checkpoint文件
-        checkpoint_dir = os.path.join(os.path.dirname(__file__), '..', 'checkpoints', 'feature_extraction')
-        checkpoint_file = os.path.join(checkpoint_dir, f"{task_id}.json")
+        checkpoint_file = get_feature_extraction_checkpoint_path(task_id)
 
         if not os.path.exists(checkpoint_file):
             return jsonify({'error': f'Checkpoint not found for task {task_id}'}), 404
@@ -860,8 +865,7 @@ def get_batch_extract_status(task_id):
         import os
         import json
 
-        checkpoint_dir = os.path.join(os.path.dirname(__file__), '..', 'checkpoints', 'feature_extraction')
-        checkpoint_file = os.path.join(checkpoint_dir, f"{task_id}.json")
+        checkpoint_file = get_feature_extraction_checkpoint_path(task_id)
 
         if not os.path.exists(checkpoint_file):
             return jsonify({'error': f'Task {task_id} not found'}), 404
@@ -939,14 +943,10 @@ def visualize_model(model_id):
         if not history:
             return jsonify({'error': 'No training history available'}), 404
 
-        # 创建可视化目录
-        viz_dir = os.path.join(os.path.dirname(__file__), '..', 'visualizations')
-        os.makedirs(viz_dir, exist_ok=True)
-
         # 生成训练曲线图
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         viz_filename = f'model_{model_id}_viz_{timestamp}.png'
-        viz_path = os.path.join(viz_dir, viz_filename)
+        viz_path = os.path.join(VISUALIZATIONS_DIR, viz_filename)
 
         # 创建2x2子图
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
@@ -1040,8 +1040,7 @@ def visualize_model(model_id):
 def download_visualization(model_id, filename):
     """下载模型可视化图片"""
     try:
-        viz_dir = os.path.join(os.path.dirname(__file__), '..', 'visualizations')
-        return send_from_directory(viz_dir, filename)
+        return send_from_directory(VISUALIZATIONS_DIR, filename)
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
@@ -1108,13 +1107,10 @@ def compare_models():
             }
             comparison_data['models'].append(model_info)
 
-        # 创建可视化
-        viz_dir = os.path.join(os.path.dirname(__file__), '..', 'visualizations')
-        os.makedirs(viz_dir, exist_ok=True)
-
+        # 生成可视化文件
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         viz_filename = f'model_comparison_{timestamp}.png'
-        viz_path = os.path.join(viz_dir, viz_filename)
+        viz_path = os.path.join(VISUALIZATIONS_DIR, viz_filename)
 
         # 创建比较图表 (2x2布局)
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
@@ -1234,8 +1230,7 @@ def compare_models():
 def download_comparison_visualization(filename):
     """下载模型比较可视化图片"""
     try:
-        viz_dir = os.path.join(os.path.dirname(__file__), '..', 'visualizations')
-        return send_from_directory(viz_dir, filename)
+        return send_from_directory(VISUALIZATIONS_DIR, filename)
     except Exception as e:
         return jsonify({'error': str(e)}), 404
 
