@@ -1155,14 +1155,5 @@ curl -X POST http://localhost:5000/api/voiceprints \
   -F "machine_type=fan"
 ```
 
----
-
-## 支持
-
-如有问题，请查看：
-- GitHub Issues: https://github.com/yourusername/audio-anomaly-detection
-- Email: support@example.com
-
----
 
 **© 2025 Audio Anomaly Detection System**
